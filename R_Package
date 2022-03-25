@@ -1,8 +1,9 @@
-Package: sortedNames
-Title: Sorted Adult Names from US Census 2020
+Package: sortedCensus
+Title: Sorted Census Data from US Census 2020 API
 Version: 0.0.0.6
 Authors@R: person("Aymane", "Elbernoussi", role=c("aut", "cre"), email = "aelbernoussi@usf.edu")
-Description: This package contains a dataframe of the most abundant names in the United States based on submitted Census forms in 2020.
+Description: This package contains a dataframe of the most abundant data in the United States based on submitted Census forms. You may load the pacakge
+and call for any information you would like to know from the US Censsus datasets that are pubicly available. 
 Depends: R (>= 3.1.2)
 Imports:
     RCurl
