@@ -1,0 +1,187 @@
+---
+title: 'Using aRules on the Titanic dataset '
+author: 'Aymane Elbernoussi'
+date: '4/08/22'
+output: html_document
+---
+
+---
+
+# Instructions
+Using the Titanic dataset to explore descriptive statistics, functions, and
+association rules. Download the titanic dataset `titanic.raw.rdata` from one
+of two locations:
+
+- https://github.com/ethen8181/machine-learning/tree/master/association_rule/R
+- https://sites.google.com/a/rdatamining.com/www/data/titanic.raw.rdata?attredirects=1
+ 
+
+---
+
+```{r setup, message = FALSE}
+# Add your library below.
+#install.packages("arules")
+library(arules)
+#install.packages("arulesViz")
+library(arulesViz)
+library(dplyr)
+
+```
+
+# Step 0 - Load the data
+Using the instructions above, load the dataset and save it as `t`.
+
+# Step 1 - Descriptive stats (0.5 point for each answer)
+
+1. Compute the percentage of people that survived.
+2. Compute the percentage of people that were children.
+3. Compute the percentage of people that were female.
+4. Finally, compute the percentage of people that were in first class.
+
+```{r, "Step 1"}
+load("titanic.raw.rdata")
+t <- titanic.raw
+
+ttotal <- nrow(t)
+survived <- filter(t,Survived == "Yes")
+
+percent_survived <- nrow(survived)/ttotal
+
+child <- nrow(filter(t,Age == "Child"))
+percent_isChild <- child/ttotal
+
+female <- nrow(filter(t,Sex == "Female"))
+percent_isFemale <- female/ttotal
+
+firstclass <- nrow(filter(t,Class == "1st"))
+percent_infirstclass <- firstclass/ttotal
+
+
+```
+
+---
+
+# Step 2 - More descriptive stats (0.5 point for each answer)
+
+
+1. What percentage of children survived? Your answer should be written such as # 13.75% of children survived
+2. What percentage of female survived?
+3. What percentage of first-class people survived?
+4. What percentage of third-class people survived?
+
+```{r, "Step 2"}
+# Write your code below.
+child_survived <- nrow(filter(survived,Age == "Child"))
+percent_childSurvived <- child_survived/nrow(filter(t, Age == "Child"))
+#Out of all children, 52% survived
+
+female_survived <- nrow(filter(survived,Sex == "Female"))
+percent_femaleSurvived <- female_survived/nrow(filter(t, Sex == "Female"))
+#Out of all females, 73% survived 
+
+firstclass_survived <- nrow(filter(survived,Class == "1st"))
+percent_firstclassSurvived <- firstclass_survived/nrow(filter(t, Class == "1st"))
+#Out of all first class members, 62% survived 
+
+thirdclass_survived <- nrow(filter(survived,Class == "3rd"))
+percent_thirdclassSurvived <- thirdclass_survived/nrow(filter(t, Class == "3rd"))
+#Out of all third class members, 25% survived
+
+```
+
+---
+
+# Step 3 - Writing a function (0.5 point for each answer)
+
+## Step 3.1 - Function 1
+Write a function that returns a new dataframe of people that satisfies the 
+specified criteria of sex, age, class and survived as parameters. I'm giving you 
+the answer for this question:
+
+```
+```
+
+```{r, "Step 3.1"}
+# Write your code below.
+myfunction1 <- function(a,b,c,d){
+df1 <- t[t$Class == a,] # filter the data that satisfied the criteria that "Class" = a
+df2 <- df1[df1$Sex == b,] # filter the data that satisfied the criteria that "Sex" = b
+df3 <- df2[df2$Age == c,] # filter the data that satisfied the criteria that "Age" = c
+df4 <- df3[df3$Survived == d,] # filter the data that satisfied the criteria that "Survived" = d
+return(df4)}
+# test the function with a sample data
+myfunction1("1st","Female","Adult","No")
+
+
+```
+
+## Step 3.2 - Function 2
+Write a function, using the previous function, that calculates the percentage 
+(who lives, who dies) for a specified (parameters) of class, gender and age 
+considering the entire number of data. The function passes four arguments. 
+Include the following code properly in your function by improvising names of objects.
+
+```
+p <- nrow(df)/nrow(t) # calculate the percentage
+```
+
+```{r, "Step 3.2"}
+# Write your code below.
+myfunction2 <- function(a,b,c,d){
+df1 <- t[t$Class == a,] # filter the data that satisfied the criteria that "Class" = a
+df2 <- df1[df1$Sex == b,] # filter the data that satisfied the criteria that "Sex" = b
+df3 <- df2[df2$Age == c,] # filter the data that satisfied the criteria that "Age" = c
+df4 <- df3[df3$Survived == d,] # filter the data that satisfied the criteria that "Survived" = d
+survived <- (nrow(df4)/nrow(t))*100 
+return(survived)}
+```
+
+## Step 3.3 - Use the function (male)
+Use the function to compare age and third-class male survival rates. 
+
+```{r, "Step 3.3"}
+# Write your code below.
+myfunction2("3rd","Male","Adult","Yes")
+# 3.4%
+myfunction2("3rd","Male","Child","Yes")
+# 0.59% 
+```
+People in which category are more likely to survive? 
+
+> [Adult males in third class were more likely to survive compared to male children in 3rd class]
+
+
+## Step 3.4 - Use the function (female)
+Use the function to compare age and first-class female survival rates.
+
+```{r, "Step 3.4"}
+# Write your code below.
+myfunction2("1st","Female","Adult","Yes")
+# 6.36%
+myfunction2("1st","Female","Child","Yes")
+# 0.04% 
+
+```
+People in which category are more likely to survive? 
+
+> [Adult Females in first class were more likely to survive compared to female children in 1st class]
+
+---
+
+# Step 4 - Use aRules (0.5 point for each answer)
+
+1. Use aRules to calculate some rules (clusters) for the titanic dataset.
+2. Visualize the results.
+
+```{r, "Step 4.1"}
+# Write your code below.
+ruleset <- apriori(t,parameter = list(support = 0.01, confidence = 0.35))
+plot(ruleset)
+inspect(ruleset)
+goodrules <- ruleset[quality(ruleset)$lift>3.3]
+inspect(goodrules)
+plot(goodrules)
+```
+
+
+
