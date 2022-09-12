@@ -1,7 +1,6 @@
 ---
 title: 'Using aRules on the Titanic dataset '
 author: 'Aymane Elbernoussi'
-date: '4/08/22'
 output: html_document
 ---
 
