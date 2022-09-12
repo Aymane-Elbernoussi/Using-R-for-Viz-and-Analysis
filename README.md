@@ -1,4 +1,4 @@
-# R_Scripts
+# Using R for different Viz and Analysis 
 
 This an R script repo which includes so far: 
 
